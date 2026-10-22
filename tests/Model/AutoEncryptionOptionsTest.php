@@ -19,12 +19,37 @@ class AutoEncryptionOptionsTest extends TestCase
         $this->assertEquals($expected, $actual->toArray());
     }
 
-    public function testFromArrayFailsForInvalidOptions(): void
+    #[DataProvider('provideInvalidOptions')]
+    public function testFromArrayFailsForInvalidOptions(array $options): void
     {
         $this->expectException(InvalidArgumentException::class);
 
+        AutoEncryptionOptions::fromArray($options);
+    }
+
+    public static function provideInvalidOptions(): Generator
+    {
+        yield 'invalid type for `keyVaultClient`' => [
+            ['keyVaultClient' => new stdClass()],
+        ];
+
+        yield 'invalid type for `kmsProviders`' => [
+            ['kmsProviders' => 'foo'],
+        ];
+
+        yield 'empty array for `kmsProviders`' => [
+            ['kmsProviders' => []],
+        ];
+    }
+
+    public function testFromArrayFailsForEmptyKmsProviders(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('"kmsProviders" option cannot be empty');
+
         AutoEncryptionOptions::fromArray([
-            'keyVaultClient' => new stdClass(),
+            'keyVaultNamespace' => 'foo.bar',
+            'kmsProviders' => [],
         ]);
     }
 

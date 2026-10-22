@@ -154,6 +154,15 @@ class DriverOptionsTest extends TestCase
                 'builderEncoder' => new StdClass(),
             ],
         ];
+
+        yield 'empty kms providers for auto encryption' => [
+            [
+                'autoEncryption' => [
+                    'keyVaultNamespace' => 'foo.bar',
+                    'kmsProviders' => [],
+                ],
+            ],
+        ];
     }
 
     public static function provideDriverInfo(): Generator

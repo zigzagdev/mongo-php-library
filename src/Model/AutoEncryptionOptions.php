@@ -150,6 +150,18 @@ final class AutoEncryptionOptions
 
         unset($options[self::KEY_KMS_PROVIDERS], $options[self::KEY_KEY_VAULT_CLIENT]);
 
+        if ($kmsProviders !== null && ! is_array($kmsProviders) && ! $kmsProviders instanceof stdClass) {
+            throw InvalidArgumentException::invalidType(
+                sprintf('"%s" option', self::KEY_KMS_PROVIDERS),
+                $kmsProviders,
+                ['array', stdClass::class],
+            );
+        }
+
+        if ($kmsProviders === []) {
+            throw new InvalidArgumentException(sprintf('"%s" option cannot be empty', self::KEY_KMS_PROVIDERS));
+        }
+
         // The server requires an empty document for automatic credentials.
         if (is_array($kmsProviders)) {
             foreach ($kmsProviders as $name => $provider) {
